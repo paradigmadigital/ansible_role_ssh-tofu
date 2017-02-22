@@ -1,0 +1,19 @@
+---
+# tasks file for ssh-tofu
+- name: Make sure the known hosts file exists
+  local_action:
+    module: file
+    args: "path={{ ssh_known_hosts_file }} state=touch"
+
+- name: Check host name availability
+  ignore_errors: True
+  local_action:
+    module: command
+    args: "ssh-keygen -f {{ ssh_known_hosts_file }} -F {{ inventory_hostname }}"
+  register: ssh_known_host_results
+
+- name: Scan the public key
+  local_action:
+    module: shell
+    args: "{{ ssh_known_hosts_command}} {{ inventory_hostname }} >> {{ ssh_known_hosts_file }}"
+  when: ssh_known_host_results.stdout == ""
