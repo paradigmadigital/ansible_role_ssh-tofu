@@ -1,5 +1,6 @@
 ---
 # tasks file for ssh-tofu
+
 - name: Make sure the known hosts file exists
   run_once: True
   local_action:
@@ -16,5 +17,5 @@
 - name: Scan the public key
   local_action:
     module: shell
-    args: "{{ ssh_known_hosts_command}} {{ ansible_default_ipv4.address }} >> {{ ssh_known_hosts_file }}"
+    args: "{{ ssh_known_hosts_command}} {{ ansible_ssh_host }} >> {{ ssh_known_hosts_file }}"
   when: ssh_known_host_results.stdout == ""
